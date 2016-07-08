@@ -19,7 +19,8 @@ process.on('uncaughtException', function(err) {
 var argv = optimist
     .default({
       verbose: false,
-      "force-exit": false,
+      'force-exit': false,
+      environment: 'dev',
       'migrations-dir': process.cwd() + '/migrations',
       'migrations-table': 'pgmigrations',
     })
@@ -32,6 +33,10 @@ var argv = optimist
     .describe('migrations-table', 'The table storing which migrations have been run (default = `pgmigrations`)')
     .alias('t', 'migrations-table')
     .string('t')
+
+    .describe('environment', 'The environment you want to migrate. If `prod`, uses PROD_DB_URL env variable.')
+    .alias('e', 'environment')
+    .string('e')
 
     .describe('dry-run', "Prints the SQL but doesn't run it.")
     .boolean('dry-run')
@@ -66,9 +71,14 @@ if (global.dryRun) {
   console.log('dry run');
 }
 
+global.environment = argv.environment;
+if ( global.environment.substr(0, 4) == 'prod' && process.env.PROD_DB_URL ) {
+  var DATABASE_URL = process.env.PROD_DB_URL;
+} else {
+  var DATABASE_URL = process.env.DATABASE_URL;
+}
 
 var MIGRATIONS_DIR = argv['migrations-dir'];
-var DATABASE_URL = process.env["DATABASE_URL"];
 var MIGRATIONS_TABLE = argv['migrations-table'];
 
 var action = argv._.shift();
