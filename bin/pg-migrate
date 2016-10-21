@@ -72,12 +72,31 @@ if (global.dryRun) {
 }
 
 global.environment = argv.environment;
-if ( global.environment.substr(0, 4) == 'prod' && process.env.PROD_DB_URL ) {
-  var DATABASE_URL = process.env.PROD_DB_URL;
-} else if ( global.environment.substr(0, 4) == 'test' && process.env.TEST_DB_URL ) {
-  var DATABASE_URL = process.env.TEST_DB_URL;
-} else {
-  var DATABASE_URL = process.env.DATABASE_URL;
+switch ( global.environment ) {
+  case 'prod':
+    if ( typeof process.env.PROD_DB_URL === 'undefined' ) {
+      console.log('PROD_DB_URL not specified in your environment.');
+      process.exit(1);
+    }
+    DATABASE_URL = process.env.PROD_DB_URL;
+    break;
+
+  case 'test':
+    if ( typeof process.env.TEST_DB_URL === 'undefined' ) {
+      console.log('TEST_DB_URL not specified in your environment.');
+      process.exit(1);
+    }
+    DATABASE_URL = process.env.TEST_DB_URL;
+    break;
+
+  case 'dev':
+    var DATABASE_URL = process.env.DATABASE_URL;
+    break;
+
+  default:
+    console.log('Invalid --environment of "'+ global.environment +'" specified. Valid options are ["dev", "prod", "test"].');
+    process.exit(1);
+    break;
 }
 
 var MIGRATIONS_DIR = argv['migrations-dir'];
