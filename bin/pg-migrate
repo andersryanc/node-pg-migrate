@@ -34,7 +34,7 @@ var argv = optimist
     .alias('t', 'migrations-table')
     .string('t')
 
-    .describe('environment', 'The environment you want to migrate. If `prod`, uses PROD_DB_URL env variable.')
+    .describe('environment', 'The environment you want to migrate. If `prod`, uses PROD_DB_URL env variable. If `test`, uses TEST_DB_URL env variable.')
     .alias('e', 'environment')
     .string('e')
 
@@ -74,6 +74,8 @@ if (global.dryRun) {
 global.environment = argv.environment;
 if ( global.environment.substr(0, 4) == 'prod' && process.env.PROD_DB_URL ) {
   var DATABASE_URL = process.env.PROD_DB_URL;
+} else if ( global.environment.substr(0, 4) == 'test' && process.env.TEST_DB_URL ) {
+  var DATABASE_URL = process.env.TEST_DB_URL;
 } else {
   var DATABASE_URL = process.env.DATABASE_URL;
 }
