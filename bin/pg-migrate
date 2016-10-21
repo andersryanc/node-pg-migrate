@@ -74,6 +74,7 @@ if (global.dryRun) {
 global.environment = argv.environment;
 switch ( global.environment ) {
   case 'prod':
+  case 'production':
     if ( typeof process.env.PROD_DB_URL === 'undefined' ) {
       console.log('PROD_DB_URL not specified in your environment.');
       process.exit(1);
@@ -90,6 +91,7 @@ switch ( global.environment ) {
     break;
 
   case 'dev':
+  case 'development':
     var DATABASE_URL = process.env.DATABASE_URL;
     break;
 
