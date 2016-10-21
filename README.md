@@ -23,6 +23,22 @@ Depending on your project's setup, it may make sense to write some custom grunt 
 - `pg-migrate down` - runs a single down migration.
 - `pg-migrate down {N}` - runs N down migrations from the current state.
 
+## Environment Flag
+
+Using your [dotenv](https://github.com/motdotla/dotenv) file, it's possible to setup multiple DB URLs to make migrating your production and test environments easier. Instead of just adding `DATABASE_URL` to your .env file, include also: `PROD_DB_URL` and/or `TEST_DB_URL` like:
+
+```
+DATABASE_URL="postgresql://dev_user:pass@localhost:5432/dev_database_name"
+TEST_DB_URL="postgresql://test_user:pass@localhost:5432/test_database_name"
+PROD_DB_URL="postgresql://prod_user:pass@prod.domain.com:5432/prod_database_name"
+```
+
+Then when you want to migrate those databases specifically, you can add the `-e` flag with a value of `prod` or `test` like:
+
+```
+pg-migrate up -e prod
+```
+
 ## Defining Migrations
 
 When you run `pg-migrate create` a new migration file is created that looks like this:
