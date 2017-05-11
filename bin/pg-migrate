@@ -82,6 +82,15 @@ switch ( global.environment ) {
     DATABASE_URL = process.env.PROD_DB_URL;
     break;
 
+  case 'stag':
+  case 'staging':
+    if ( typeof process.env.STAG_DB_URL === 'undefined' ) {
+      console.log('STAG_DB_URL not specified in your environment.');
+      process.exit(1);
+    }
+    DATABASE_URL = process.env.STAG_DB_URL;
+    break;
+
   case 'test':
     if ( typeof process.env.TEST_DB_URL === 'undefined' ) {
       console.log('TEST_DB_URL not specified in your environment.');
